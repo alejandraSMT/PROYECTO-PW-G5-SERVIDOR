@@ -2,7 +2,7 @@ import { sequelize } from './database/database.js';
 import express from 'express';
 
 // Importar modelos
-import Usuario from './models/Usuario.js';
+import {Usuario} from './models/Usuario.js';
 
 const app = express()
 const port = process.env.PORT || 3001;
