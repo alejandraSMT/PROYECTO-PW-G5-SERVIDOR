@@ -1,5 +1,5 @@
 import { sequelize } from './database/database.js';
-import express from 'express';
+import {express} from 'express';
 
 // Importar modelos
 import {Usuario} from './models/Usuario.js';
