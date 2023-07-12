@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test":"echo \"Error: no test especificied\" && exit 1",
+    "test": "echo \"Error: no test especificied\" && exit 1",
     "start": "node ./index.js"
   },
   "dependencies": {
@@ -10,5 +10,19 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1"
   },
-  "type": "module"
+  "type": "module",
+  "name": "proyecto-pw-g5-servidor",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alejandraSMT/PROYECTO-PW-G5-SERVIDOR.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alejandraSMT/PROYECTO-PW-G5-SERVIDOR/issues"
+  },
+  "homepage": "https://github.com/alejandraSMT/PROYECTO-PW-G5-SERVIDOR#readme"
 }
