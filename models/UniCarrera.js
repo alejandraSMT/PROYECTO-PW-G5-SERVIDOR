@@ -11,26 +11,27 @@ export const UniCarrera = sequelize.define(
             autoIncrement: true
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps : false
     }
 )
 
-UniCarrera .hasMany(Universidad, {
+UniCarrera .belongsTo(Universidad, {
     foreignKey: "universidadId",
     sourceKey: "id"
 })
 
-Universidad .belongsTo(UniCarrera, {
+Universidad .hasMany(UniCarrera, {
     foreignKey: "universidadId",
     targetKey: "id"
 })
 
-UniCarrera .hasMany(Carrera, {
+UniCarrera .belongsTo(Carrera, {
     foreignKey: "carreraId",
-    sourceKey: "id"
+    //sourceKey: "id"
 })
 
-Carrera .belongsTo(UniCarrera, {
+Carrera .hasMany(UniCarrera, {
     foreignKey: "carreraId",
-    targetKey: "id"
+    //targetKey: "id"
 })

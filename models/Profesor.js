@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 
-import { Usuario } from "./Rol.js";
+import { Usuario } from "./Usuario.js";
 
 export const Profesor = sequelize.define(
     "Profesor", {
@@ -11,16 +11,19 @@ export const Profesor = sequelize.define(
             autoIncrement: true
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps : false
     }
 )
 
-Profesor .hasMany(Usuario, {
+Profesor .belongsTo(Usuario, {
     foreignKey: "usuarioId",
     sourceKey: "id"
 })
 
-Usuario .belongsTo(Profesor, {
+Usuario .hasMany(Profesor, {
     foreignKey: "usuarioId",
     targetKey: "id"
 })
+
+

@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
+import { Universidad } from "./Universidad.js";
 
 export const Carrera = sequelize.define(
     "Carrera", {
@@ -12,6 +13,7 @@ export const Carrera = sequelize.define(
             type: DataTypes.STRING
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps : false
     }
 )

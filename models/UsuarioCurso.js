@@ -12,26 +12,27 @@ export const UsuarioCurso = sequelize.define(
             autoIncrement: true
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps : false
     }
 )
 
-UsuarioCurso .hasMany(Usuario, {
+UsuarioCurso .belongsTo(Usuario, {
     foreignKey: "usuarioId",
     sourceKey: "id"
 })
 
-Usuario .belongsTo(UsuarioCurso, {
+Usuario .hasMany(UsuarioCurso, {
     foreignKey: "usuarioId",
     targetKey: "id"
 })
 
-UsuarioCurso .hasMany(Curso, {
+UsuarioCurso .belongsTo(Curso, {
     foreignKey: "cursoId",
     sourceKey: "id"
 })
 
-Curso .belongsTo(UsuarioCurso, {
+Curso .hasMany(UsuarioCurso, {
     foreignKey: "cursoId",
     targetKey: "id"
 })

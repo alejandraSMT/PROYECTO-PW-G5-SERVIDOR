@@ -3,6 +3,7 @@ import { sequelize } from "../database/database.js";
 
 import { Universidad } from "./Universidad.js";
 import { Carrera } from "./Carrera.js";
+import { Curso } from "./Curso.js";
 
 export const Usuario = sequelize.define(
     "Usuario", {
@@ -11,9 +12,10 @@ export const Usuario = sequelize.define(
             primaryKey: true,
             autoIncrement: true
         },
+        // unico ejem: wonwonderful
         nombreUsuario: {
             type: DataTypes.STRING,
-            allowNull: false
+            unique : true
         },
         password: {
             type: DataTypes.STRING,
@@ -24,11 +26,21 @@ export const Usuario = sequelize.define(
             allowNull: false,
             unique: true
         },
+        // Alejandra
         nombres: {
             type: DataTypes.STRING,
             allowNull: false
         },
+        // San Martin
         apellidos: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        // alejandrasanmartin o Alejandra San Martin o ALEJANDRA SAN MARTIN o alejandra san martin
+        nombreCompleto: {
+            type: DataTypes.STRING,
+        },
+        nroDocumento: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -36,12 +48,10 @@ export const Usuario = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false
         },
-        nroDocumento: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         rol: {
-            type: DataTypes.STRING,
+            // 0 -> estudiante
+            // 1 -> profesor
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         tituloPerfil: {
@@ -53,28 +63,24 @@ export const Usuario = sequelize.define(
         imgPerfil: {
             type: DataTypes.STRING
         }
-
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps : false
     }
 )
 
-Usuario .hasMany(Universidad, {
+Usuario .belongsTo(Universidad, {
     foreignKey: "universidadId",
-    sourceKey: "id"
 })
 
-Universidad .belongsTo(Usuario, {
+Universidad .hasMany(Usuario, {
     foreignKey: "universidadId",
-    targetKey: "id"
 })
 
-Usuario .hasMany(Carrera, {
+Usuario .belongsTo(Carrera, {
     foreignKey: "carreraId",
-    sourceKey: "id"
 })
 
-Carrera .belongsTo(Usuario, {
+Carrera .hasMany(Usuario, {
     foreignKey: "carreraId",
-    targetKey: "id"
 })

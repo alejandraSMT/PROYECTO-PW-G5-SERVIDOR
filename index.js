@@ -1,9 +1,21 @@
-import { sequelize } from './database/database.js';
-import express from 'express';
+import { sequelize } from "./database/database.js";
+import express from "express";
 import cors from "cors";
 
 // Importar modelos
-import {Usuario} from './models/Usuario.js';
+import { Usuario } from "./models/Usuario.js";
+import { Profesor } from "./models/Profesor.js";
+import { Estudiante } from "./models/Estudiante.js";
+import { Universidad } from "./models/Universidad.js";
+import { Carrera } from "./models/Carrera.js";
+import { CarreraCurso } from "./models/CarreraCurso.js";
+import { UniCarrera } from "./models/UniCarrera.js";
+import { Curso } from "./models/Curso.js";
+import { UsuarioCurso } from "./models/UsuarioCurso.js";
+import { Horario } from "./models/Horario.js";
+import { Cita } from "./models/Citas.js";
+import { Model, where } from "sequelize";
+
 
 const app = express()
 const port = process.env.PORT || 3001;
@@ -23,17 +35,6 @@ async function verificarConexion(){
         console.error("Conexion no se logro.", error);
     }
 }
-
-app.get("/create-user", async function(req, res){
-    const nuevoUsuario = await Usuario.create({
-        nombre : "Pepe",
-        codigo : "20123254",
-        edad : 30
-
-    })
-
-    res.send("Usuario creado.");
-})
 
 app.get("/", function(req, res){
     res.send("Se conectó correctamente");
