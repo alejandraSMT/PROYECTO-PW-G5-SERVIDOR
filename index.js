@@ -1533,7 +1533,7 @@ app.post("/horarios/:usuarioId", async (req, res) => {
 //Endpoint para agregar un nuevo Horario.
 //Apartir de este se puede aramar para eliminar uno de la base de datos
 
-app.post("/horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
+app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
     async (req, res) => {
         try {
             const diaSemana = req.params.diaSemana;
