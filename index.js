@@ -29,7 +29,7 @@ async function verificarConexion() {
     try {
         await sequelize.authenticate()
         console.log("Conexion a BD exitosa.");
-        await sequelize.sync({ force: true })
+        await sequelize.sync({ force: false })
     }
     catch (error) {
         console.error("Conexion no se logro.", error);
