@@ -67,7 +67,7 @@ app.post("/register", async (req, res) => {
         },
     });
 
-    if (users, length == 0) {
+    if (users.length == 0) {
         const newUser = await Usuario.create({
             id: nextIdUser,
             nombreUsuario: usuario,
