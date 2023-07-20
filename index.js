@@ -320,7 +320,7 @@ app.get("/consultar-cita-pasada/:usuarioId", async function (req, res) {
 //---------------------------- ALE --------------------------------
 
 
-app.get("/buscar-citas/:usuarioId", async function (req, res) {
+app.post("/buscar-citas/:usuarioId", async function (req, res) {
     const usuarioId = req.params.usuarioId
 
     let usuario = null
