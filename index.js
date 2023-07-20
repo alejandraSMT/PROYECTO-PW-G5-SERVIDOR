@@ -69,8 +69,8 @@ app.post("/register", async (req, res) => {
         },
     });
 
-    if (users, length == 0) {
-        const newUser = Usuario.create({
+    if (users.length == 0) {
+        const newUser = await Usuario.create({
             id: nextIdUser,
             nombreUsuario: usuario,
             password: password,
@@ -87,7 +87,7 @@ app.post("/register", async (req, res) => {
             const maxIdResultStud = await Estudiante.max("id");
             const nextIdStud = (maxIdResultStud || 0) + 1; // Calcula el próximo ID
 
-            const newStudent = Estudiante.create({
+            const newStudent = await Estudiante.create({
                 id: nextIdStud,
                 usuarioId: nextIdUser
             });
@@ -96,7 +96,7 @@ app.post("/register", async (req, res) => {
             const maxIdResultTea = await Profesor.max("id");
             const nextIdTea = (maxIdResultTea || 0) + 1; // Calcula el próximo ID
 
-            const newTeacher = Profesor.create({
+            const newTeacher = await Profesor.create({
                 id: nextIdTea,
                 usuarioId: nextIdUser
             });
