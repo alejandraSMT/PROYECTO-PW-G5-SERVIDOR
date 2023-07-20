@@ -1533,18 +1533,27 @@ app.post("/horarios/:usuarioId", async (req, res) => {
 //Endpoint para agregar un nuevo Horario.
 //Apartir de este se puede aramar para eliminar uno de la base de datos
 
-app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
+app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion/:usuarioId",
     async (req, res) => {
         try {
+            const usuarioId = req.params.usuarioId
             const diaSemana = req.params.diaSemana;
             const horaInicio = req.params.horaInicio;
             const horaFin = req.params.horaFin;
             const enlaceSesion = req.params.enlaceSesion;
+
+            const profesor = await Profesor.findOne({
+                where:{
+                    usuarioId : usuarioId
+                }
+            })
+
             const horario = await Horario.create({
                 diaSemana: diaSemana,
                 horaInicio: horaInicio,
                 horaFin: horaFin,
                 enlaceSesion: enlaceSesion,
+                profesorId : profesor.dataValues.id
             });
             res.send(horario);
             console.log(horario);
