@@ -110,7 +110,7 @@ app.post("/login", async (req, res) => {
     const input = req.body.input;
     const password = req.body.password;
 
-    const user = await Usuario.findOne({
+    try{const user = await Usuario.findOne({
         where: {
             [Op.or]: [
                 { nombreUsuario: input },
@@ -126,6 +126,8 @@ app.post("/login", async (req, res) => {
     else {
         res.send(user);
         console.log(user);
+    }}catch(e){
+        res.send(e)
     }
 });
 
