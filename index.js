@@ -1510,8 +1510,8 @@ app.post("/horarios/:usuarioId", async (req, res) => {
             }
         })
         const horarios = await Horario.findAll({
-            where :{
-                profesorId : profesor.dataValues.id
+            where: {
+                profesorId: profesor.dataValues.id
             },
             include: [Profesor],
         });
@@ -1543,17 +1543,21 @@ app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion/:usuar
             const enlaceSesion = req.params.enlaceSesion;
 
             const profesor = await Profesor.findOne({
-                where:{
-                    usuarioId : usuarioId
+                where: {
+                    usuarioId: usuarioId
                 }
             })
 
+            const maxIdHorario = await horaInicio.max("id");
+            const nextIdHorario = (maxIdHorario || 0) + 1;
+
             const horario = await Horario.create({
+                id : nextIdHorario,
                 diaSemana: diaSemana,
                 horaInicio: horaInicio,
                 horaFin: horaFin,
                 enlaceSesion: enlaceSesion,
-                profesorId : profesor.dataValues.id
+                profesorId: profesor.dataValues.id
             });
             res.send(horario);
             console.log(horario);
