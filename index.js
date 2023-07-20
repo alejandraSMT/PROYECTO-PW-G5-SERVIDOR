@@ -588,7 +588,7 @@ app.get("/citas-pasadas/:usuarioId", async function (req, res) {
     res.send(citasMostrar)
 })
 
-app.get("/principal-citas/:usuarioId", async function (req, res) {
+app.post("/principal-citas/:usuarioId", async function (req, res) {
     const usuarioId = req.params.usuarioId
 
     let usuario = null
@@ -1064,7 +1064,7 @@ app.get("/obtener-datos-info-personal/:usuarioId", async function (req, res) { /
 
 
 //creo que esto no iria, ya que el usuario deberia ingresar esos datos, no recogerlos del servidor
-app.get("/obtener-datos-usuario/:usuarioId", async function (req, res) { //para tab de usuario
+app.post("/obtener-datos-usuario/:usuarioId", async function (req, res) { //para tab de usuario
     const usuarioId = req.params.usuarioId;
     const usuario = await Usuario.findOne({
         where: {
