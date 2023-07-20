@@ -110,6 +110,22 @@ app.post("/register", async (req, res) => {
 
 });
 
+app.post("/registrar-usuario", async function (req, res) {
+    const usuario = req.body.user;
+    const correo = req.body.email;
+    const password = req.body.password;
+
+    const nombres = capitalizeFirstLetter(req.body.names);
+    const apellidos = capitalizeFirstLetter(req.body.surnames);
+    const nombreCompleto = nombres + " " + apellidos;
+
+    const tipoDoc = req.body.tdoc;
+    const nroDoc = req.body.ndoc;
+    const rol = req.body.rol;
+
+    console.log(usuario, correo, password)
+})
+
 app.post("/login", async (req, res) => {
     const input = req.body.input;
     const password = req.body.password;
