@@ -1498,7 +1498,7 @@ app.get("/usuarios/:parametro", async (req, res) => {
 // ------------------------------- CRISTOPHER --------------------------
 
 
-app.get("/horarios", async (req, res) => {
+app.post("/horarios", async (req, res) => {
     try {
       const horarios = await Horario.findAll({
         include: [Profesor],
@@ -1521,7 +1521,7 @@ app.get("/horarios", async (req, res) => {
   //Endpoint para agregar un nuevo Horario.
   //Apartir de este se puede aramar para eliminar uno de la base de datos
   
-  app.get("/horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
+  app.post("/horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
     async (req, res) => {
       try {
         const diaSemana = req.params.diaSemana;
@@ -1543,7 +1543,7 @@ app.get("/horarios", async (req, res) => {
   );
   
   //Al presionar el boton X de la columna de Horarios, se debe enviar esta peticion
-  app.get("/remover-horario/:idHorario",
+  app.post("/remover-horario/:idHorario",
     async (req, res) => {
       try {
         const id = req.params.idHorario;
