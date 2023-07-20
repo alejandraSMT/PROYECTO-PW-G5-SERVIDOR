@@ -447,7 +447,7 @@ app.get("/buscar-citas/:usuarioId", async function (req, res) {
 })
 
 
-app.get("/citas-pasadas/:usuarioId", async function (req, res) {
+app.post("/citas-pasadas/:usuarioId", async function (req, res) {
     const usuarioId = req.params.usuarioId
 
     let usuario = null
