@@ -27,11 +27,6 @@ app.use(cors({
 
 app.use(express.json())
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*")
-})
-
-
 async function verificarConexion() {
     try {
         await sequelize.authenticate()
