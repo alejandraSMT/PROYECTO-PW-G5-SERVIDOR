@@ -1548,7 +1548,7 @@ app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion/:usuar
                 }
             })
 
-            const maxIdHorario = await horaInicio.max("id");
+            const maxIdHorario = await Horario.max("id");
             const nextIdHorario = (maxIdHorario || 0) + 1;
 
             const horario = await Horario.create({
