@@ -17,12 +17,14 @@ import { Horario } from "./models/Horario.js";
 import { Cita } from "./models/Citas.js";
 import { Model, where } from "sequelize";
 
-import { capitalizeFirstLetter } from "./utils/funcionesBienUtiles.js";
-
 
 const app = express()
 const port = process.env.PORT || 3001;
 
+/*app.use(cors({
+    origin: "*",
+    optionsSuccessStatus: 200
+}))*/
 app.use(cors());
 
 app.use(express.json())
@@ -67,8 +69,8 @@ app.post("/register", async (req, res) => {
         },
     });
 
-    if (users.length == 0) {
-        const newUser = await Usuario.create({
+    if (users, length == 0) {
+        const newUser = Usuario.create({
             id: nextIdUser,
             nombreUsuario: usuario,
             password: password,
@@ -85,7 +87,7 @@ app.post("/register", async (req, res) => {
             const maxIdResultStud = await Estudiante.max("id");
             const nextIdStud = (maxIdResultStud || 0) + 1; // Calcula el próximo ID
 
-            const newStudent = await Estudiante.create({
+            const newStudent = Estudiante.create({
                 id: nextIdStud,
                 usuarioId: nextIdUser
             });
@@ -94,7 +96,7 @@ app.post("/register", async (req, res) => {
             const maxIdResultTea = await Profesor.max("id");
             const nextIdTea = (maxIdResultTea || 0) + 1; // Calcula el próximo ID
 
-            const newTeacher = await Profesor.create({
+            const newTeacher = Profesor.create({
                 id: nextIdTea,
                 usuarioId: nextIdUser
             });
@@ -1546,11 +1548,11 @@ app.post("/agregar-horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion/:usuar
                 }
             })
 
-            const maxIdHorario = await Horario.max("id");
+            const maxIdHorario = await horaInicio.max("id");
             const nextIdHorario = (maxIdHorario || 0) + 1;
 
             const horario = await Horario.create({
-                id : nextIdHorario,
+                id: nextIdHorario,
                 diaSemana: diaSemana,
                 horaInicio: horaInicio,
                 horaFin: horaFin,
