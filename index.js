@@ -17,6 +17,8 @@ import { Horario } from "./models/Horario.js";
 import { Cita } from "./models/Citas.js";
 import { Model, where } from "sequelize";
 
+import { capitalizeFirstLetter } from "./utils/funcionesBienUtiles.js";
+
 
 const app = express()
 const port = process.env.PORT || 3001;
