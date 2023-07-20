@@ -767,44 +767,50 @@ app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:usuarioId", asyn
 app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:usuarioProfeId/:usuarioId/:cursoId", async function (req, res) {
 
     const { diaSemana, dia, mes, anio, hora, usuarioProfeId, usuarioId, cursoId } = req.params
-
+  
     const estudiante = await Estudiante.findOne({
-        where: {
-            usuarioId: usuarioId
-        },
-        include: {
-            model: Usuario,
-        }
+      where: {
+        usuarioId: usuarioId
+      },
+      include: {
+        model: Usuario,
+      }
     })
-
+  
     const profesor = await Profesor.findOne({
-        where: {
-            usuarioId: usuarioProfeId
-        },
+      where: {
+        usuarioId: usuarioProfeId
+      },
+      include: {
+        model: Usuario,
         include: {
-            model: Usuario,
-            include: {
-                model: Carrera
-            }
+          model: Carrera
         }
+      }
     })
-
+  
+    const maxIdCita = await Cita.max("id");
+    const nextIdCita = (maxIdCita || 0) + 1;
+  
     const cita = await Cita.create({
-        dia: dia,
-        mes: mes,
-        anio: anio,
-        hora: hora,
-        diaSemana: diaSemana,
-        status: 0,
-        profesorId: profesor.dataValues.id,
-        estudianteId: estudiante.dataValues.id,
-        cursoId: cursoId,
-        carreraId: profesor.dataValues.Usuario.Carrera.id
+      id: nextIdCita,
+      puntaje: null,
+      comentario: null,
+      dia: parseInt(dia),
+      mes: parseInt(mes),
+      anio: parseInt(anio),
+      hora: parseInt(hora),
+      diaSemana: diaSemana,
+      status: 0,
+      profesorId: profesor.dataValues.id,
+      estudianteId: estudiante.dataValues.id,
+      cursoId: parseInt(cursoId),
+      carreraId: parseInt(profesor.dataValues.Usuario.Carrera.id)
     })
-
+  
     res.send(cita)
-
-})
+  
+  })
 
 
 // -------------------------------- FRANK -------------------------------
