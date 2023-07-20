@@ -112,11 +112,68 @@ app.post("/register", async (req, res) => {
 
 app.post("/prueba-endpoint", async function (req, res) {
     const usuario = req.body.user;
-    
+    const correo = req.body.email;
+    const password = req.body.password;
 
-   
-    res.send(usuario)
-    console.log(usuario)
+    const nombres = capitalizeFirstLetter(req.body.names);
+    const apellidos = capitalizeFirstLetter(req.body.surnames);
+    const nombreCompleto = nombres + " " + apellidos;
+
+    const tipoDoc = req.body.tdoc;
+    const nroDoc = req.body.ndoc;
+    const rol = req.body.rol;
+
+    const maxIdResultUser = await Usuario.max("id");
+    const nextIdUser = (maxIdResultUser || 0) + 1; // Calcula el próximo ID
+
+    const users = await Usuario.findAll({
+        where: {
+            [Op.or]: [
+                { nombreUsuario: usuario },
+                { correo: correo },
+                { nroDocumento: nroDoc }
+            ]
+        },
+    });
+
+    if (users.length == 0) {
+        const newUser = await Usuario.create({
+            id: nextIdUser,
+            nombreUsuario: usuario,
+            password: password,
+            correo: correo,
+            nombres: nombres,
+            apellidos: apellidos,
+            nombreCompleto: nombreCompleto,
+            nroDocumento: nroDoc,
+            tipoDocumento: tipoDoc,
+            rol: rol
+        });
+
+        if (rol == "0") {
+            const maxIdResultStud = await Estudiante.max("id");
+            const nextIdStud = (maxIdResultStud || 0) + 1; // Calcula el próximo ID
+
+            const newStudent = await Estudiante.create({
+                id: nextIdStud,
+                usuarioId: nextIdUser
+            });
+        }
+        else {
+            const maxIdResultTea = await Profesor.max("id");
+            const nextIdTea = (maxIdResultTea || 0) + 1; // Calcula el próximo ID
+
+            const newTeacher = await Profesor.create({
+                id: nextIdTea,
+                usuarioId: nextIdUser
+            });
+        }
+
+        res.send("Usuario creado.")
+    }
+    else {
+        res.send("Usuario ya existente.")
+    }
 })
 
 app.post("/login", async (req, res) => {
