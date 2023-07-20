@@ -708,7 +708,7 @@ app.get("/datos-usuario/:usuarioId", async function (req, res) {
 })
 
 // /:dia/:mes/:anio
-app.get("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:profesorId", async function (req, res) {
+app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:profesorId", async function (req, res) {
 
     // const [diaSemana,dia,mes,anio,profesorId] = req.params
     const { diaSemana, dia, mes, anio, profesorId } = req.params
