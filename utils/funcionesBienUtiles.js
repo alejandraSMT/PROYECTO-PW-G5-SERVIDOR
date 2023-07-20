@@ -1,26 +1,36 @@
+function capitalizeFirstLetter(str) {
+  const words = str.split(" ");
+  const capitalizedWords = words.map((word) => {
+    const firstLetter = word.charAt(0).toUpperCase();
+    const restOfWord = word.slice(1).toLowerCase(); // Cambia las demás letras a minúsculas
+    return firstLetter + restOfWord;
+  });
+  return capitalizedWords.join(" ");
+}
+
 function getDateComponents(dateString) {
   const stringComps = dateString.split("-");
 
   if (stringComps.length != 3) {
     return null;
   }
-  
+
 
   try {
     const year = parseInt(stringComps[0]);
     const month = parseInt(stringComps[1]);
     const day = parseInt(stringComps[2]);
 
-    console.log(year,month,day)
+    console.log(year, month, day)
 
-    const date = new Date(year, month-1, day);
+    const date = new Date(year, month - 1, day);
 
     console.log(date.getDay())
 
     const response = {
       diaSemana: convertFromDayIntToString(date.getDay()),
       diaNumero: date.getDate(),
-      mes: date.getMonth()+1,
+      mes: date.getMonth() + 1,
       year: date.getFullYear(),
     };
 
@@ -101,6 +111,8 @@ function convertFromMonthIntToString(monthCode) {
     default:
       return null;
   }
+
+
 }
 
-export {getDateComponents, convertFromDayIntToString, convertFromMonthIntToString}
+export { getDateComponents, convertFromDayIntToString, convertFromMonthIntToString, capitalizeFirstLetter }
