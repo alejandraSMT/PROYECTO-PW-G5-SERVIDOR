@@ -695,7 +695,7 @@ app.post("/principal-citas/:usuarioId", async function (req, res) {
 
 })
 
-app.get("/datos-usuario/:usuarioId", async function (req, res) {
+app.post("/datos-usuario/:usuarioId", async function (req, res) {
 
     const usuarioId = req.params.usuarioId
 
