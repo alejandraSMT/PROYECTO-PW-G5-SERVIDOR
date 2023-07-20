@@ -796,7 +796,7 @@ app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:usuarioProfeId/:usuar
         hora: hora,
         diaSemana: diaSemana,
         status: 0,
-        profesorId: usuarioProfeId,
+        profesorId: profesor.dataValues.id,
         estudianteId: estudiante.dataValues.id,
         cursoId: cursoId,
         carreraId: profesor.dataValues.Usuario.Carrera.id
