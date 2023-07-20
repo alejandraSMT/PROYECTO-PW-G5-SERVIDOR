@@ -21,11 +21,15 @@ const app = express()
 const port = process.env.PORT || 3001;
 
 app.use(cors({
-    origin : "http://localhost:3000",
-    optionsSuccessStatus:200
-  }))
+    origin: "http://localhost:3000",
+    optionsSuccessStatus: 200
+}))
 
 app.use(express.json())
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+})
 
 
 async function verificarConexion() {
@@ -447,144 +451,144 @@ app.get("/buscar-citas/:usuarioId", async function (req, res) {
 
 app.get("/citas-pasadas/:usuarioId", async function (req, res) {
     const usuarioId = req.params.usuarioId
-  
+
     let usuario = null
     usuario = await Usuario.findOne({
-      where: {
-        id: usuarioId
-      },
+        where: {
+            id: usuarioId
+        },
     })
-  
+
     var seleccionado = null
     if (usuario.dataValues.rol == 0) {
-      seleccionado = await Estudiante.findOne({
-        where: {
-          usuarioId: usuario.dataValues.id
-        }
-      })
+        seleccionado = await Estudiante.findOne({
+            where: {
+                usuarioId: usuario.dataValues.id
+            }
+        })
     } else {
-      seleccionado = await Profesor.findOne({
-        where: {
-          usuarioId: usuario.dataValues.id
-        }
-      })
+        seleccionado = await Profesor.findOne({
+            where: {
+                usuarioId: usuario.dataValues.id
+            }
+        })
     }
-  
+
     var citas = null
     if (usuario.dataValues.rol == 0) {
-      citas = await Cita.findAll({
-        where: {
-          estudianteId: seleccionado.id,
-          status: 1
-        },
-        include : [
-          {
-            model : Profesor,
-            include : [
-              {
-                model: Usuario,
-                attributes: ["id", "nombres", "apellidos", "imgPerfil", "tituloPerfil"]
-              }
+        citas = await Cita.findAll({
+            where: {
+                estudianteId: seleccionado.id,
+                status: 1
+            },
+            include: [
+                {
+                    model: Profesor,
+                    include: [
+                        {
+                            model: Usuario,
+                            attributes: ["id", "nombres", "apellidos", "imgPerfil", "tituloPerfil"]
+                        }
+                    ]
+                },
+                {
+                    model: Curso
+                },
+                {
+                    model: Carrera,
+                    attributes: ["id", "nombreCarrera"]
+                }
             ]
-          },
-          {
-            model : Curso
-          },
-          {
-            model : Carrera,
-            attributes: ["id","nombreCarrera"]
-          }
-        ]
-      })
-    } else if(usuario.dataValues.rol == 1) {
-      citas = await Cita.findAll({
-        where: {
-          profesorId: seleccionado.id,
-          status: 1
-        },
-        include : [
-          {
-            model : Estudiante,
-            include : [
-              {
-                model: Usuario,
-                attributes: ["id", "nombres", "apellidos", "imgPerfil", "tituloPerfil"]
-              }
+        })
+    } else if (usuario.dataValues.rol == 1) {
+        citas = await Cita.findAll({
+            where: {
+                profesorId: seleccionado.id,
+                status: 1
+            },
+            include: [
+                {
+                    model: Estudiante,
+                    include: [
+                        {
+                            model: Usuario,
+                            attributes: ["id", "nombres", "apellidos", "imgPerfil", "tituloPerfil"]
+                        }
+                    ]
+                },
+                {
+                    model: Curso
+                }
             ]
-          },
-          {
-            model : Curso
-          }
-        ]
-      })
+        })
     }
-  
+
     var citasMostrar = []
-  
+
     if (usuario.dataValues.rol == 0) {
-      citas.forEach(cita => {
-        const elemento = {
-          usuario: {
-            id: usuario.dataValues.id,
-            nombres: usuario.dataValues.nombres,
-            apellidos: usuario.dataValues.apellidos,
-            cita: {
-              id: cita.dataValues.id,
-              dia: cita.dataValues.dia,
-              mes: cita.dataValues.mes,
-              anio: cita.dataValues.anio,
-              diaSemana: cita.dataValues.diaSemana,
-              hora: cita.dataValues.hora,
-              status: cita.dataValues.status,
-              nombreCurso: cita.dataValues.Curso.nombreCurso,
-              calificacion: cita.dataValues.puntaje,
-              nombreCarrera: cita.dataValues.Carrera.nombreCarrera,
-              persona: {
-                id: cita.dataValues.Profesor.Usuario.id,
-                nombres: cita.dataValues.Profesor.Usuario.nombres,
-                apellidos: cita.dataValues.Profesor.Usuario.apellidos,
-                imgPerfil: cita.dataValues.Profesor.Usuario.imgPerfil,
-                tituloPerfil: cita.dataValues.Profesor.Usuario.tituloPerfil,
-              }
+        citas.forEach(cita => {
+            const elemento = {
+                usuario: {
+                    id: usuario.dataValues.id,
+                    nombres: usuario.dataValues.nombres,
+                    apellidos: usuario.dataValues.apellidos,
+                    cita: {
+                        id: cita.dataValues.id,
+                        dia: cita.dataValues.dia,
+                        mes: cita.dataValues.mes,
+                        anio: cita.dataValues.anio,
+                        diaSemana: cita.dataValues.diaSemana,
+                        hora: cita.dataValues.hora,
+                        status: cita.dataValues.status,
+                        nombreCurso: cita.dataValues.Curso.nombreCurso,
+                        calificacion: cita.dataValues.puntaje,
+                        nombreCarrera: cita.dataValues.Carrera.nombreCarrera,
+                        persona: {
+                            id: cita.dataValues.Profesor.Usuario.id,
+                            nombres: cita.dataValues.Profesor.Usuario.nombres,
+                            apellidos: cita.dataValues.Profesor.Usuario.apellidos,
+                            imgPerfil: cita.dataValues.Profesor.Usuario.imgPerfil,
+                            tituloPerfil: cita.dataValues.Profesor.Usuario.tituloPerfil,
+                        }
+                    }
+                }
             }
-          }
-        }
-        // si calificado es null, poner No calificado y que se pueda calificar, sino desactivar el botón y cuando califique pintar el puntaje
-        citasMostrar.push(elemento)
-      })
+            // si calificado es null, poner No calificado y que se pueda calificar, sino desactivar el botón y cuando califique pintar el puntaje
+            citasMostrar.push(elemento)
+        })
     } else {
-      citas.forEach(cita => {
-        const elemento = {
-          usuario: {
-            id: usuario.dataValues.id,
-            nombres: usuario.dataValues.nombres,
-            apellidos: usuario.dataValues.apellidos,
-            cita: {
-              id: cita.dataValues.id,
-              dia: cita.dataValues.dia,
-              mes: cita.dataValues.mes,
-              anio: cita.dataValues.anio,
-              diaSemana: cita.dataValues.diaSemana,
-              hora: cita.dataValues.hora,
-              status: cita.dataValues.status,
-              nombreCurso: cita.dataValues.Curso.nombreCurso,
-              calificacion: cita.dataValues.puntaje,
-              persona: {
-                id: cita.dataValues.Estudiante.Usuario.id,
-                nombres: cita.dataValues.Estudiante.Usuario.nombres,
-                apellidos: cita.dataValues.Estudiante.Usuario.apellidos,
-                imgPerfil: cita.dataValues.Estudiante.Usuario.imgPerfil,
-                tituloPerfil: cita.dataValues.Estudiante.Usuario.tituloPerfil,
-              }
+        citas.forEach(cita => {
+            const elemento = {
+                usuario: {
+                    id: usuario.dataValues.id,
+                    nombres: usuario.dataValues.nombres,
+                    apellidos: usuario.dataValues.apellidos,
+                    cita: {
+                        id: cita.dataValues.id,
+                        dia: cita.dataValues.dia,
+                        mes: cita.dataValues.mes,
+                        anio: cita.dataValues.anio,
+                        diaSemana: cita.dataValues.diaSemana,
+                        hora: cita.dataValues.hora,
+                        status: cita.dataValues.status,
+                        nombreCurso: cita.dataValues.Curso.nombreCurso,
+                        calificacion: cita.dataValues.puntaje,
+                        persona: {
+                            id: cita.dataValues.Estudiante.Usuario.id,
+                            nombres: cita.dataValues.Estudiante.Usuario.nombres,
+                            apellidos: cita.dataValues.Estudiante.Usuario.apellidos,
+                            imgPerfil: cita.dataValues.Estudiante.Usuario.imgPerfil,
+                            tituloPerfil: cita.dataValues.Estudiante.Usuario.tituloPerfil,
+                        }
+                    }
+                }
             }
-          }
-        }
-        // si calificado es null, poner No calificado y que se pueda calificar, sino desactivar el botón y cuando califique pintar el puntaje
-        citasMostrar.push(elemento)
-      })
+            // si calificado es null, poner No calificado y que se pueda calificar, sino desactivar el botón y cuando califique pintar el puntaje
+            citasMostrar.push(elemento)
+        })
     }
     res.send(citasMostrar)
-  })
+})
 
 app.get("/principal-citas/:usuarioId", async function (req, res) {
     const usuarioId = req.params.usuarioId
