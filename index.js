@@ -709,14 +709,20 @@ app.post("/datos-usuario/:usuarioId", async function (req, res) {
 })
 
 // /:dia/:mes/:anio
-app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:profesorId", async function (req, res) {
+app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:usuarioId", async function (req, res) {
 
     // const [diaSemana,dia,mes,anio,profesorId] = req.params
-    const { diaSemana, dia, mes, anio, profesorId } = req.params
+    const { diaSemana, dia, mes, anio, usuarioId } = req.params
+
+    const profesor = await Profesor.findOne({
+        where : {
+            usuarioId : usuarioId
+        }
+    })
 
     const citas = await Cita.findAll({
         where: {
-            profesorId: profesorId,
+            profesorId: profesor.dataValues.id,
             dia: dia,
             mes: mes,
             anio: anio
@@ -726,7 +732,7 @@ app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:profesorId", asy
 
     const horario = await Horario.findOne({
         where: {
-            profesorId: profesorId,
+            profesorId: profesor.dataValues.id,
             diaSemana: diaSemana
         },
         attributes: ["diaSemana", "horaInicio", "horaFin"]
@@ -758,9 +764,9 @@ app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:profesorId", asy
 
 })
 
-app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:profesorId/:usuarioId/:cursoId", async function (req, res) {
+app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:usuarioProfeId/:usuarioId/:cursoId", async function (req, res) {
 
-    const { diaSemana, dia, mes, anio, hora, profesorId, usuarioId, cursoId } = req.params
+    const { diaSemana, dia, mes, anio, hora, usuarioProfeId, usuarioId, cursoId } = req.params
 
     const estudiante = await Estudiante.findOne({
         where: {
@@ -773,7 +779,7 @@ app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:profesorId/:usuarioId
 
     const profesor = await Profesor.findOne({
         where: {
-            id: profesorId
+            usuarioId: usuarioProfeId
         },
         include: {
             model: Usuario,
@@ -790,7 +796,7 @@ app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:profesorId/:usuarioId
         hora: hora,
         diaSemana: diaSemana,
         status: 0,
-        profesorId: profesorId,
+        profesorId: usuarioProfeId,
         estudianteId: estudiante.dataValues.id,
         cursoId: cursoId,
         carreraId: profesor.dataValues.Usuario.Carrera.id
