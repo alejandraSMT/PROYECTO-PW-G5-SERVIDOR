@@ -1,7 +1,7 @@
 import { sequelize } from "./database/database.js";
 import express from "express";
 import cors from "cors";
-import {Op} from "sequelize"
+import { Op } from "sequelize"
 
 // Importar modelos
 import { Usuario } from "./models/Usuario.js";
@@ -114,23 +114,25 @@ app.post("/login", async (req, res) => {
     const input = req.body.input;
     const password = req.body.password;
 
-    try{const user = await Usuario.findOne({
-        where: {
-            [Op.or]: [
-                { nombreUsuario: input },
-                { correo: input }
-            ],
-            password: password,
-        },
-    });
+    try {
+        const user = await Usuario.findOne({
+            where: {
+                [Op.or]: [
+                    { nombreUsuario: input },
+                    { correo: input }
+                ],
+                password: password,
+            },
+        });
 
-    if (!user) {
-        return res.status(404).json({ error: "Usuario no encontrado." });
-    }
-    else {
-        res.send(user);
-        console.log(user);
-    }}catch(e){
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado." });
+        }
+        else {
+            res.send(user);
+            console.log(user);
+        }
+    } catch (e) {
         res.send(e)
     }
 });
@@ -715,8 +717,8 @@ app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:usuarioId", asyn
     const { diaSemana, dia, mes, anio, usuarioId } = req.params
 
     const profesor = await Profesor.findOne({
-        where : {
-            usuarioId : usuarioId
+        where: {
+            usuarioId: usuarioId
         }
     })
 
@@ -767,50 +769,50 @@ app.post("/consultar-disponibilidad/:diaSemana/:dia/:mes/:anio/:usuarioId", asyn
 app.post("/reservar-cita/:diaSemana/:dia/:mes/:anio/:hora/:usuarioProfeId/:usuarioId/:cursoId", async function (req, res) {
 
     const { diaSemana, dia, mes, anio, hora, usuarioProfeId, usuarioId, cursoId } = req.params
-  
+
     const estudiante = await Estudiante.findOne({
-      where: {
-        usuarioId: usuarioId
-      },
-      include: {
-        model: Usuario,
-      }
-    })
-  
-    const profesor = await Profesor.findOne({
-      where: {
-        usuarioId: usuarioProfeId
-      },
-      include: {
-        model: Usuario,
+        where: {
+            usuarioId: usuarioId
+        },
         include: {
-          model: Carrera
+            model: Usuario,
         }
-      }
     })
-  
+
+    const profesor = await Profesor.findOne({
+        where: {
+            usuarioId: usuarioProfeId
+        },
+        include: {
+            model: Usuario,
+            include: {
+                model: Carrera
+            }
+        }
+    })
+
     const maxIdCita = await Cita.max("id");
     const nextIdCita = (maxIdCita || 0) + 1;
-  
+
     const cita = await Cita.create({
-      id: nextIdCita,
-      puntaje: null,
-      comentario: null,
-      dia: parseInt(dia),
-      mes: parseInt(mes),
-      anio: parseInt(anio),
-      hora: parseInt(hora),
-      diaSemana: diaSemana,
-      status: 0,
-      profesorId: profesor.dataValues.id,
-      estudianteId: estudiante.dataValues.id,
-      cursoId: parseInt(cursoId),
-      carreraId: parseInt(profesor.dataValues.Usuario.Carrera.id)
+        id: nextIdCita,
+        puntaje: null,
+        comentario: null,
+        dia: parseInt(dia),
+        mes: parseInt(mes),
+        anio: parseInt(anio),
+        hora: parseInt(hora),
+        diaSemana: diaSemana,
+        status: 0,
+        profesorId: profesor.dataValues.id,
+        estudianteId: estudiante.dataValues.id,
+        cursoId: parseInt(cursoId),
+        carreraId: parseInt(profesor.dataValues.Usuario.Carrera.id)
     })
-  
+
     res.send(cita)
-  
-  })
+
+})
 
 
 // -------------------------------- FRANK -------------------------------
@@ -1498,70 +1500,80 @@ app.get("/usuarios/:parametro", async (req, res) => {
 // ------------------------------- CRISTOPHER --------------------------
 
 
-app.post("/horarios", async (req, res) => {
+// traer solo horarios del profesor
+app.post("/horarios/:usuarioId", async (req, res) => {
     try {
-      const horarios = await Horario.findAll({
-        include: [Profesor],
-      });
-      const horariosData = horarios.map((horario) => ({
-        id: horario.id,
-        diaSemana: horario.diaSemana,
-        horaInicio: horario.horaInicio,
-        horaFin: horario.horaFin,
-        enlaceSesion: horario.enlaceSesion,
-      }));
-  
-      res.send(horariosData);
-      console.log(horariosData);
+        const usuarioId = req.params.usuarioId
+        const profesor = await Profesor.findOne({
+            where: {
+                usuarioId: usuarioId
+            }
+        })
+        const horarios = await Horario.findAll({
+            where :{
+                profesorId : profesor.dataValues.id
+            },
+            include: [Profesor],
+        });
+        const horariosData = horarios.map((horario) => ({
+            id: horario.id,
+            diaSemana: horario.diaSemana,
+            horaInicio: horario.horaInicio,
+            horaFin: horario.horaFin,
+            enlaceSesion: horario.enlaceSesion,
+        }));
+
+        res.send(horariosData);
+        console.log(horariosData);
     } catch (error) {
-      res.status(500).json({ error: "Failed to retrieve horarios" });
+        res.status(500).json({ error: "Failed to retrieve horarios" });
     }
-  });
-  
-  //Endpoint para agregar un nuevo Horario.
-  //Apartir de este se puede aramar para eliminar uno de la base de datos
-  
-  app.post("/horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
+});
+
+//Endpoint para agregar un nuevo Horario.
+//Apartir de este se puede aramar para eliminar uno de la base de datos
+
+app.post("/horarios/:diaSemana/:horaInicio/:horaFin/:enlaceSesion",
     async (req, res) => {
-      try {
-        const diaSemana = req.params.diaSemana;
-        const horaInicio = req.params.horaInicio;
-        const horaFin = req.params.horaFin;
-        const enlaceSesion = req.params.enlaceSesion;
-        const horario = await Horario.create({
-          diaSemana: diaSemana,
-          horaInicio: horaInicio,
-          horaFin: horaFin,
-          enlaceSesion: enlaceSesion,
-        });
-        res.send(horario);
-        console.log(horario);
-      } catch (error) {
-        res.json({ error: "No se pudo agregar el horario" });
-      }
-    }
-  );
-  
-  //Al presionar el boton X de la columna de Horarios, se debe enviar esta peticion
-  app.post("/remover-horario/:idHorario",
-    async (req, res) => {
-      try {
-        const id = req.params.idHorario;
-        const deletedRows = await Horario.destroy({
-          where: {
-            id: id,
-          },
-        });
-        if (deletedRows > 0) {
-          res.status(200).json({ message: 'Horario deleted successfully' });
-        } else {
-          res.status(404).json({ message: 'Horario not found' });
+        try {
+            const diaSemana = req.params.diaSemana;
+            const horaInicio = req.params.horaInicio;
+            const horaFin = req.params.horaFin;
+            const enlaceSesion = req.params.enlaceSesion;
+            const horario = await Horario.create({
+                diaSemana: diaSemana,
+                horaInicio: horaInicio,
+                horaFin: horaFin,
+                enlaceSesion: enlaceSesion,
+            });
+            res.send(horario);
+            console.log(horario);
+        } catch (error) {
+            res.json({ error: "No se pudo agregar el horario" });
         }
-      } catch (error) {
-        res.status(500).json({ error: 'Failed to delete the horario' });
-      }
     }
-  );
+);
+
+//Al presionar el boton X de la columna de Horarios, se debe enviar esta peticion
+app.post("/remover-horario/:idHorario",
+    async (req, res) => {
+        try {
+            const id = req.params.idHorario;
+            const deletedRows = await Horario.destroy({
+                where: {
+                    id: id,
+                },
+            });
+            if (deletedRows > 0) {
+                res.status(200).json({ message: 'Horario deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Horario not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to delete the horario' });
+        }
+    }
+);
 
 app.get("/", function (req, res) {
     res.send("Se conectó correctamente");
