@@ -1498,7 +1498,7 @@ app.get("/usuarios/:parametro", async (req, res) => {
 // ------------------------------- CRISTOPHER --------------------------
 
 
-app.get("/horarios", async (req, res) => {
+app.post("/horarios", async (req, res) => {
     try {
       const horarios = await Horario.findAll({
         include: [Profesor],
